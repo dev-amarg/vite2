@@ -1,0 +1,34 @@
+name: another vite
+  on:
+    push:
+      branches: [ "main" ]
+    pull_request:
+
+permissions:
+  contents: write
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: download source code
+        uses: actions/checkout@v4
+
+      - name: setup nodejs
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.20.8'
+
+      - name: install dependencies
+        run: npm ci
+
+      - name: build project
+         run: npm run build
+
+      - name: deploy to github
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          publish_dir: ./dist
+          publish_branch: gh-pages
